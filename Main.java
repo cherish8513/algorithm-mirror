@@ -1,64 +1,57 @@
-package matrix;
+package light_switch;
 
 import java.util.Scanner;
 
 public class Main {
-	static int N;
-	static int M;
-	static int[][] from_matrix;
-	static int[][] to_matrix;
-	static int count = 0;
+	static int N = 3;
+	static int[] to_light;
 
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
-		String[] str = sc.nextLine().split(" ");
-		N = Integer.parseInt(str[0]);
-		M = Integer.parseInt(str[1]);
-		from_matrix = new int[N][M];
-		to_matrix = new int[N][M];
-
-		for (int i = 0; i < N; i++) { // A 매트릭스 입력
-			String sl = sc.nextLine();
-			for (int j = 0; j < M; j++)
-				from_matrix[i][j] = sl.charAt(j) - '0';
-		}
-		for (int i = 0; i < N; i++) { // B 매트릭스 입력
-			String sl = sc.nextLine();
-			for (int j = 0; j < M; j++)
-				to_matrix[i][j] = sl.charAt(j) - '0';
-		}
-		calc();
-		System.out.println(count);
-		sc.close();
-		
-	}
-
-	static void calc() {
+		N = Integer.parseInt(sc.nextLine());
+		int[] from_light = new int[N];
+		int[] copy_light = new int[N];
+		to_light = new int[N];
+		String str = sc.nextLine();
 		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < M; j++) {
-				if (from_matrix[i][j] != to_matrix[i][j]) {
-					if (reverse(i, j)) { // 3 x 3으로 뒤집기가 가능하면 뒤집기
-						count++;
-					} else { // 뒤집지 못 한다면 A -> B 불가능
-						count = -1;
-						return;
-					}
-				}
-			}
-		}
+			from_light[i] = str.charAt(i) - '0';
+			copy_light[i] = str.charAt(i) - '0'; // 첫 전구 키는 상황
+		} // end of input A lights
+		str = sc.nextLine();
+		for (int i = 0; i < N; i++) {
+			to_light[i] = str.charAt(i) - '0';
+		} // end of input B lights
+
+		int count = calc(from_light);
+		copy_light[0] = copy_light[0] == 0 ? 1 : 0;
+		copy_light[1] = copy_light[1] == 0 ? 1 : 0;
+		int copy_count = calc(copy_light); // count + 1
+
+		if (count == -1 && copy_count == -1)
+			System.out.println(-1);
+		else if (count == -1 || copy_count == -1)
+			System.out.println(Math.max(count, copy_count + 1));
+		else
+			System.out.println(Math.min(count, copy_count + 1));
+		sc.close();
 	}
 
-	static boolean reverse(int x, int y) {
-
-		if (x + 3 > N || y + 3 > M) // 최소가 3 X 3
-			return false;
-
-		for (int i = x; i < x + 3; i++) {
-			for (int j = y; j < y + 3; j++) {
-				from_matrix[i][j] = from_matrix[i][j] == 0 ? 1 : 0;
+	static int calc(int[] lights) {
+		int count = 0;
+		for (int i = 1; i < N; i++) {
+			if (lights[i - 1] != to_light[i - 1]) {
+				reverse(i, lights);
+				count++;
 			}
 		}
-		return true;
+		return lights[N - 1] == to_light[N - 1] ? count : -1;
+	}
+
+	static void reverse(int idx, int[] lights) {
+		lights[idx] = lights[idx] == 0 ? 1 : 0;
+		lights[idx - 1] = lights[idx - 1] == 0 ? 1 : 0;
+		if (idx + 1 < N)
+			lights[idx + 1] = lights[idx + 1] == 0 ? 1 : 0;
 	}
 
 }
