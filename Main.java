@@ -1,57 +1,33 @@
-package pizza_boxes;
+package parenthesis;
 
 import java.util.Scanner;
 
 public class Main {
+	static int T;
+	static String pt;
+
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
-		long result = 0;
-		int row = sc.nextInt();
-		int col = sc.nextInt();
+		T = Integer.parseInt(sc.nextLine());
+		for (int i = 0; i < T; i++) {
+			pt = sc.nextLine();
+			int count = 0;
+			for (int j = 0; j < pt.length(); j++) {
+				if (pt.charAt(j) == '(')
+					count++;
+				else
+					count--;
 
-		int[][] pizzas = new int[row][col];
-		int[][] copy_pizzas = new int[row][col];
-
-		for (int i = 0; i < row; i++) {
-			for (int j = 0; j < col; j++) {
-				pizzas[i][j] = sc.nextInt();
-				copy_pizzas[i][j] = pizzas[i][j];
-				result += pizzas[i][j];
-			}
-		}
-
-		// front view
-		for (int i = 0; i < row; i++) {
-			int max_height = 0;
-			int x = 0;
-			int y = 0;
-			for (int j = 0; j < col; j++) {
-				if (max_height < pizzas[i][j]) {
-					max_height = pizzas[i][j];
-					x = j;
-					y = i;
+				if (count < 0) {
+					break;
 				}
 			}
-			result -= copy_pizzas[y][x];
-			copy_pizzas[y][x] = 0;
+			if (count == 0)
+				System.out.println("YES");
+			else
+				System.out.println("NO");
 		}
-
-		// side view
-		for (int i = 0; i < col; i++) {
-			int max_height = 0;
-			int x = 0;
-			int y = 0;
-			for (int j = 0; j < row; j++) {
-				if (max_height < pizzas[j][i]) {
-					max_height = pizzas[j][i];
-					x = i;
-					y = j;
-				}
-			}
-			result -= copy_pizzas[y][x];
-			copy_pizzas[y][x] = 0;
-		}
-
-		System.out.println(result);
+		sc.close();
 	}
+
 }
