@@ -1,30 +1,51 @@
-package zero;
+package balanced_world;
 
 import java.util.Scanner;
 
 public class Main {
 	public static void main(String[] args) {
-		int count = 0;
 		Scanner sc = new Scanner(System.in);
-		int n = sc.nextInt();
-		int[] arr = new int [n];
-		for (int i = 0; i < n; i++) {
-			int input_num = sc.nextInt();
-			if(input_num == 0) {
-				count--;
-				arr[count] = 0;
+		String str = sc.nextLine();
+		char c;
+		while (!(str.equals("."))) {
+			int check = 0;
+			int count_so = 0;
+			int count_dae = 0;
+
+			char[] arr = new char[100];
+			int idx = 0;
+			while ((c = str.charAt(check)) != '.') {
+				check++;
+				if (c == '(') {
+					count_so++;
+					idx++;
+					arr[idx] = c;
+				} else if (c == ')') {
+					count_so--;
+					if (arr[idx] != '(')
+						break;
+					else
+						idx--;
+				} else if (c == '[') {
+					count_dae++;
+					idx++;
+					arr[idx] = c;
+				} else if (c == ']') {
+					count_dae--;
+					if (arr[idx] != '[')
+						break;
+					else
+						idx--;
+				}
+				if (count_so < 0 || count_dae < 0)
+					break;
 			}
-			else {
-				arr[count] = input_num;
-				count++;
-			}
+			if (count_so == 0 && count_dae == 0)
+				System.out.println("yes");
+			else
+				System.out.println("no");
+			str = sc.nextLine();
 		}
-		int result = 0;
-		for (int i : arr) {
-			result += i;
-		}
-		
-		System.out.println(result);
 		sc.close();
 	}
 }
