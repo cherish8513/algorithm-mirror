@@ -1,50 +1,30 @@
-package stack_example;
+package zero;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.util.Scanner;
 
 public class Main {
-	static int N;
-
-	public static void main(String[] args) throws NumberFormatException, IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-
-		N = Integer.parseInt(br.readLine());
-		int[] stack = new int[N];
+	public static void main(String[] args) {
 		int count = 0;
-
-		for (int i = 0; i < N; i++) {
-			String str = br.readLine();
-			if (str.contains("push")) {
-				String[] push = str.split(" ");
-				count++;
-				stack[count] = Integer.parseInt(push[1]);
-			} else if (str.contains("top")) {
-				if (stack[count] == 0)
-					bw.write("-1\n");
-				else
-					bw.write(stack[count] + "\n");
-			} else if (str.contains("pop")) {
-				if (stack[count] == 0)
-					bw.write("-1\n");
-				else {
-					bw.write(stack[count] + "\n");
-					count--;
-				}
-			} else if (str.contains("empty")) {
-				bw.write((count == 0 ? 1 : 0) + "\n");
+		Scanner sc = new Scanner(System.in);
+		int n = sc.nextInt();
+		int[] arr = new int [n];
+		for (int i = 0; i < n; i++) {
+			int input_num = sc.nextInt();
+			if(input_num == 0) {
+				count--;
+				arr[count] = 0;
 			}
-
-			else if (str.contains("size")) {
-				bw.write(count + "\n");
+			else {
+				arr[count] = input_num;
+				count++;
 			}
 		}
-		bw.flush();
-		br.close();
-		bw.close();
+		int result = 0;
+		for (int i : arr) {
+			result += i;
+		}
+		
+		System.out.println(result);
+		sc.close();
 	}
 }
