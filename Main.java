@@ -1,43 +1,53 @@
-package nge;
+package queue_two;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.Stack;
-import java.util.StringTokenizer;
 
 public class Main {
-	static int value = 1;
-	static int valueOfIdx = 0;
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws NumberFormatException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 		int n = Integer.parseInt(br.readLine());
-		Stack<Integer[]> stack = new Stack<>();
-		int[] arr = new int[n];
-		int idx = 0;
-		StringTokenizer st = new StringTokenizer(br.readLine());
+		int[] queue = new int[2000000];
+		int front = 0;
+		int rear = 1;
 		for (int i = 0; i < n; i++) {
-			int next = Integer.parseInt(st.nextToken());
-			while (!stack.isEmpty() && stack.peek()[value] < next) {
-				arr[stack.peek()[valueOfIdx]] = next;
-				stack.pop();
+			String order = br.readLine();
+			if (order.contains("push")) {
+				front++;
+				String[] push = order.split(" ");
+				queue[front] = Integer.parseInt(push[1]);
+			} else if (order.contains("pop")) {
+				if (front < rear)
+					bw.write(-1 + "\n");
+				else {
+					bw.write(queue[rear] + "\n");
+					rear++;
+				}
+			} else if (order.contains("size")) {
+				bw.write(front-rear+1 + "\n");
+			} else if (order.contains("empty")) {
+				if (front < rear)
+					bw.write(1 + "\n");
+				else
+					bw.write(0 + "\n");
+			} else if (order.contains("front")) {
+				if (front < rear)
+					bw.write(-1 + "\n");
+				else {
+					bw.write(queue[rear] + "\n");
+				}
+			} else if (order.contains("back")) {
+				if (front < rear)
+					bw.write(-1 + "\n");
+				else {
+					bw.write(queue[front] + "\n");
+				}
 			}
-			Integer[] val = {idx, next};
-			stack.add(val);
-			idx++;
 		}
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < n - 1; i++) {
-			if (arr[i] == 0)
-				sb.append(-1).append(' ');
-			else
-				sb.append(arr[i]).append(' ');
-		}
-		sb.append(-1);
-		bw.write(sb+"\n");
 		bw.flush();
 		bw.close();
 		br.close();
