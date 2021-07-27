@@ -1,27 +1,45 @@
-package iron_stick;
+package nge;
 
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.Stack;
+import java.util.StringTokenizer;
 
 public class Main {
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		String str = sc.nextLine();
-		int count = 0;
-		int result = 0;
-		
-		for (int i = 0; i < str.length(); i++) {
-			if (str.charAt(i) == '(') count++;
-			else {
-				count--;
-				
-				if(str.charAt(i-1) == '(')
-					result += count;
-				else
-					result++;
+	static int value = 1;
+	static int valueOfIdx = 0;
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+		int n = Integer.parseInt(br.readLine());
+		Stack<Integer[]> stack = new Stack<>();
+		int[] arr = new int[n];
+		int idx = 0;
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < n; i++) {
+			int next = Integer.parseInt(st.nextToken());
+			while (!stack.isEmpty() && stack.peek()[value] < next) {
+				arr[stack.peek()[valueOfIdx]] = next;
+				stack.pop();
 			}
+			Integer[] val = {idx, next};
+			stack.add(val);
+			idx++;
 		}
-		
-		System.out.println(result);
-		sc.close();
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < n - 1; i++) {
+			if (arr[i] == 0)
+				sb.append(-1).append(' ');
+			else
+				sb.append(arr[i]).append(' ');
+		}
+		sb.append(-1);
+		bw.write(sb+"\n");
+		bw.flush();
+		bw.close();
+		br.close();
 	}
 }
