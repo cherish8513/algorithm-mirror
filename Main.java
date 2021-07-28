@@ -1,37 +1,51 @@
-package yosepus;
+package trafic;
 
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Scanner;
+import java.util.StringTokenizer;
+
 /**
  * 
  * @author jooheon
  * Since 2021.07.28
- * 요세푸스 수열 출력
- *
+ * 11116 교통량 문제
+ * 입력값은 최대 20만개
+ * 가능한 알고리즘은 O(N^2)
+ * 첫 번째 배열 탐색 값 + 1500이 두 번째 배열 탐색 값에 없다면 종료 
  */
 public class Main {
 	public static void main(String[] args) {
-		Queue<Integer> q = new LinkedList<>(); // PriorityQueue로 받으면 Stack과 거의 같다.
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		int K = sc.nextInt();
-		for(int i = 1 ; i <= N; i++) { // Queue에 1부터 N까지 넣는다.
-			q.add(i);
-		}
-		StringBuilder sb = new StringBuilder(); // 출력 결과용 StringBuilder 준비
-		sb.append("<"); // 첫 문자인 < 저장
-		while(!q.isEmpty()) {
-			for(int i = 0; i < K-1; i++) { // K-1 횟수만큼 빼고 맨 뒤로 넣는다.
-				int num = q.poll();
-				q.add(num);
+		int T = Integer.parseInt(sc.nextLine());
+		int[] count = new int[T]; 
+		
+		for(int t = 0; t < T; t++) {
+			int N = Integer.parseInt(sc.nextLine());
+			int[] left = new int[N];
+			int[] right = new int[N];
+			StringTokenizer st = new StringTokenizer(sc.nextLine());
+			for(int i = 0; i < N; i++) {
+				left[i] = Integer.parseInt(st.nextToken());
+			} // end of input of first array
+			st = new StringTokenizer(sc.nextLine());
+			for(int i = 0; i < N; i++) {
+				right[i] = Integer.parseInt(st.nextToken());
+			} // end of input of second array
+			boolean check = false;
+			for(int i = 0; i < N; i++) {
+				if(check)
+					break;
+				for(int j = 0; j < N; j++) {
+					if(left[i] + 1500 == right[j]) {
+						count[t]++;
+						check = false;
+						break;
+					}
+					check = true;
+				}
 			}
-			sb.append(q.poll() + ", "); // K번째를 빼고 StringBuilder에 저장
 		}
-		sb.deleteCharAt(sb.lastIndexOf(",")); // 마지막 ,를 지운다.
-		sb.deleteCharAt(sb.lastIndexOf(" ")); // 마지막 공백을 지운다.
-		sb.append(">"); // 마지막 문자인 > 저장
-		System.out.println(sb); // 출력
+		for(int c : count)
+			System.out.println(c);
 		sc.close();
 	}
 }
