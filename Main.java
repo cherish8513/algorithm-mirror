@@ -1,34 +1,51 @@
-package recursive;
+package big_number;
 
 import java.util.Scanner;
 
 public class Main {
-	static int limit;
-	static String str = "____";
+	static int target;
+	static int[] arr;
+	static int N;
+	static int result = 0;
+	static int target_depth;
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
-		limit = sc.nextInt();
-		System.out.println("어느 한 컴퓨터공학과 학생이 유명한 교수님을 찾아가 물었다.");
-		recursive(0);
+		String[] str = sc.nextLine().split(" ");
+		target = Integer.parseInt(str[0]);
+		target_depth = str[0].length();
+		int input_max_value = (str[0].charAt(0) - '0');
+		N = Integer.parseInt(str[1]);
+		arr = new int[N];
+		str = sc.nextLine().split(" ");
+		boolean check = true;
+		for(int i = 0; i < N; i++) {
+			arr[i] = Integer.parseInt(str[i]);
+			if(arr[i] < (input_max_value))
+				check = false;
+		}
+		if(check)
+			target_depth--;
+		dfs(0, new int[target_depth]);
+		System.out.println(result);
 		sc.close();
+		
 	}
 	
-	static void recursive(int time) {
-		String str_output = "";
-		for(int i = 0; i < time; i++) {
-			str_output += str;
-		}
-		if(time == limit) {
-			System.out.println(str_output + "\"재귀함수가 뭔가요?\"");
-			System.out.println(str_output + "\"재귀함수는 자기 자신을 호출하는 함수라네\"");
-			System.out.println(str_output + "라고 답변하였지.");
+	static void dfs(int depth, int[] candidate){
+		if(depth == target_depth) {
+			StringBuilder sb = new StringBuilder();
+			for(int i : candidate)
+				sb.append(i);
+			String str = sb.substring(0);
+			int value = Integer.parseInt(str);
+			if(value <= target)
+				result = Math.max(result, value);
 			return;
 		}
-		System.out.println(str_output + "\"재귀함수가 뭔가요?\"");
-		System.out.println(str_output + "\"잘 들어보게. 옛날옛날 한 산 꼭대기에 이세상 모든 지식을 통달한 선인이 있었어.");
-		System.out.println(str_output + "마을 사람들은 모두 그 선인에게 수많은 질문을 했고, 모두 지혜롭게 대답해 주었지.");
-		System.out.println(str_output + "그의 답은 대부분 옳았다고 하네. 그런데 어느 날, 그 선인에게 한 선비가 찾아와서 물었어.\"");
-		recursive(time+1);
-		System.out.println(str_output + "라고 답변하였지.");
+		for(int i = 0; i < N; i++) {
+			candidate[depth] = arr[i];
+			dfs(depth+1, candidate);
+		}
+			
 	}
 }
