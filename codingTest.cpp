@@ -2,7 +2,7 @@
 #include<vector>
 using namespace std;
 
-vector<int> graph[101];
+vector<int> graph[101];		// 최대 컴퓨터가 100대까지 입력 된다 했으므로 인덱스 100까지 쓰기 위해 크기를 101로 잡음
 bool visited[101];
 int cnt = 0;
 
@@ -27,5 +27,5 @@ int main() {
 	}
 
 	dfs(1);
-	printf("%d\n", cnt - 1);
+	printf("%d\n", cnt - 1);		// 처음 1번은 포함하지 말아야 하므로 1 빼줌
 }
