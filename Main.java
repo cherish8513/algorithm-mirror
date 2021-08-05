@@ -1,58 +1,74 @@
-package iland;
+package tree_diameter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
-	public static void main(String[] args) throws IOException {
+	static int result = 0;
+	static int longest_node_idx = 0;
+	public static void main(String[] args) throws NumberFormatException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int numberOfPoint = Integer.parseInt(br.readLine());
+		List<ArrayList<Info>> map = new ArrayList<>();
+		map.add(null); // 0번째 버림
+		for (int i = 0; i < numberOfPoint; i++) {
+			map.add(new ArrayList<>());
+		} // map 초기화
 		StringTokenizer st;
-		StringBuilder sb = new StringBuilder();
-		while (true) {
+		for (int i = 1; i <= numberOfPoint; i++) {
 			st = new StringTokenizer(br.readLine(), " ");
-			int w = Integer.parseInt(st.nextToken());
-			int h = Integer.parseInt(st.nextToken());
-			if (w == 0 && h == 0)
-				break;
-			int[][] map = new int[h + 2][w + 2];
-			boolean[][] visited = new boolean[h + 2][w + 2];
-			for (int i = 1; i < h + 1; i++) {
-				String str = br.readLine();
-				for (int j = 1, idx = 0; j < w + 1; j++, idx+=2) {
-					map[i][j] = str.charAt(idx)-'0';
-					visited[i][j] = false;
-				}
-			} // end of for input
-			int output = 0;
-			for (int i = 1; i < h + 1; i++) {
-				for (int j = 1; j < w + 1; j++) {
-					if(map[i][j] == 1 && !visited[i][j]) {
-						dfs(map, visited, i, j);
-						output++;
-					}
+			int from = Integer.parseInt(st.nextToken());
+			while (st.hasMoreTokens()) {
+				int to = Integer.parseInt(st.nextToken());
+				if (to != -1) {
+					int distance = Integer.parseInt(st.nextToken());
+					map.get(from).add(new Info(to, distance));
+					map.get(to).add(new Info(from, distance));
 				}
 			}
-			sb.append(output).append("\n");
-		} // end of while testCases
-		System.out.println(sb);
-	} // end of main
+		} // end of input
+		boolean[] visited = new boolean[numberOfPoint + 1];
+		for (int i = 0; i < numberOfPoint + 1; i++) {
+			visited[i] = false;
+		}
+		dfs(map, 1, 0, Arrays.copyOfRange(visited, 0, numberOfPoint + 1));
+		dfs(map, longest_node_idx, 0, Arrays.copyOfRange(visited, 0, numberOfPoint + 1));
 
-	private static void dfs(int[][] map, boolean[][] visited, int y, int x) {
+		System.out.println(result);
+		br.close();
+	}
+
+	private static void dfs(List<ArrayList<Info>> map, int startPoint, int cur_dist, boolean[] visited) {
 		// TODO Auto-generated method stub
-		if(visited[y][x] || map[y][x] == 0)
+		if (visited[startPoint]) {
 			return;
-		else {
-		visited[y][x] = true;
-		dfs(map, visited, y + 1, x);
-		dfs(map, visited, y + 1, x + 1);
-		dfs(map, visited, y + 1, x - 1);
-		dfs(map, visited, y, x + 1);
-		dfs(map, visited, y, x - 1);
-		dfs(map, visited, y - 1, x);
-		dfs(map, visited, y - 1, x + 1);
-		dfs(map, visited, y - 1, x - 1);
+		} else {
+			visited[startPoint] = true;
+			if(result < cur_dist) {
+				result = cur_dist;
+				longest_node_idx = startPoint;
+			}
+			for (Info linkedNode : map.get(startPoint))
+				dfs(map, linkedNode.to, cur_dist + linkedNode.distance, visited);
 		}
 	}
-} // end of class
+}
+
+class Info {
+	public int to;
+	public int distance;
+
+	/**
+	 * @param to
+	 * @param distance
+	 */
+	public Info(int to, int distance) {
+		this.to = to;
+		this.distance = distance;
+	}
+}
