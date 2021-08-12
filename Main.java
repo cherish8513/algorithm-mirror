@@ -1,47 +1,50 @@
-package baekjoon_10819_차이를_최대로;
+package backjoon_1520_decend;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.util.Scanner;
 
 public class Main {
+	static int[][] dp;
+	static int[][] map;
 	static int N;
-	private static int[] arr;
-	private static int maxResult = Integer.MIN_VALUE;
-	private static boolean[] isSelected;
-	private static int[] selected;
-	public static void main(String[] args) throws NumberFormatException, IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		N = Integer.parseInt(br.readLine());
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		arr = new int[N];
-		for(int i = 0; i < N; i++) {
-			arr[i] = Integer.parseInt(st.nextToken());
+	static int M;
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		N = sc.nextInt();
+		M = sc.nextInt();
+		map = new int[N + 2][M + 2];
+		dp = new int[N + 2][M + 2];
+		for (int i = 0; i < N + 2; i++) {
+			for (int j = 0; j < M + 2; j++) {
+				map[i][j] = 10001;
+			}
+		} // 테두리 10001로 초기화
+		for (int i = 1; i < N + 1; i++) {
+			for (int j = 1; j < M + 1; j++) {
+				map[i][j] = sc.nextInt();
+			}
+		} // end of for input
+		for (int i = 0; i < N + 2; i++) {
+			for (int j = 0; j < M + 2; j++) {
+				dp[i][j] = -1;
+			}
+		}
+		System.out.println(dfs(1, 1, 10001));
+	}// end of main
+
+	private static int dfs(int i, int j, int height) {
+		// TODO Auto-generated method stub
+		
+		if(i == N && j == M && height > map[i][j]) {
+			return 1;
 		}
 		
-		isSelected = new boolean[N];
-		selected = new int[N];
-		search(0, selected);
-		System.out.println(maxResult);
-	}
-	
-	public static void search(int idx, int[] selected){
-		if(idx == N) {
-			int result = 0;
-			for(int i = 0; i < N-1; i++)
-				result += Math.abs(selected[i] - selected[i+1]);
-			maxResult = Math.max(result, maxResult);
-			return;
-		}
+		if(map[i][j] >= height)
+			return 0;
+
+		if(dp[i][j] != -1)
+			return dp[i][j];
 		
-		for(int i = 0; i < N; i++) {
-			if(isSelected[i])
-				continue;
-			isSelected[i] = true;
-			selected[idx] = arr[i];
-			search(idx + 1, selected);
-			isSelected[i] = false;
-		}
+		return dp[i][j] = dfs(i - 1, j, map[i][j]) + dfs(i + 1, j, map[i][j]) + 
+				dfs(i, j - 1, map[i][j]) + dfs(i, j + 1, map[i][j]);
 	}
-}
+} // end of class
