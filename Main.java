@@ -32,6 +32,7 @@ public class Main {
 		search(1, nums[0]);
 		System.out.println(maxResult);
 		System.out.println(minResult);
+		br.close();
 	}
 
 	private static void search(int idx, int result) {
