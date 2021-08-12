@@ -1,45 +1,95 @@
-package backjoon_1890_jump_hard;
+package backjoon_14888_연산자끼워넣기;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 import java.util.StringTokenizer;
 
 public class Main {
-	private static int[][] map;
-	private static long[][] dp;
-	private static int N;
+	static List<Character> list = new ArrayList<Character>();
+	static int N;
+	static long minResult = Long.MAX_VALUE;
+	static long maxResult = Long.MIN_VALUE;
+	static int[] oper = new int[4];
+	private static int[] nums;
 
 	public static void main(String[] args) throws NumberFormatException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		N = Integer.parseInt(br.readLine());
-		StringTokenizer st;
-		map = new int[N][N];
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		nums = new int[N];
 		for (int i = 0; i < N; i++) {
-			st = new StringTokenizer(br.readLine());
-			for (int j = 0; j < N; j++) {
-				map[i][j] = Integer.parseInt(st.nextToken());
-			}
-		} // end of for input
-		dp = new long[N][N];
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++) {
-				dp[i][j] = -1;
-			}
-		} // 덧셈 해야하니 -1로 초기화
-		System.out.println(dfs(0, 0));
+			nums[i] = Integer.parseInt(st.nextToken());
+		}
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < 4; i++) {
+			oper[i] = Integer.parseInt(st.nextToken());
+		}
+//		int[] candidate = new int[N - 1];
+		search(1, nums[0]);
+		System.out.println(maxResult);
+		System.out.println(minResult);
 	}
 
-	private static long dfs(int i, int j) {
+	private static void search(int idx, int result) {
 		// TODO Auto-generated method stub
-		if (i == N - 1 && j == N - 1)
-			return 1;
-		if (i >= N || j >= N || map[i][j] == 0)
-			return 0;
-		if (dp[i][j] != -1)
-			return dp[i][j];
+		if (idx == N) {
+			maxResult = Math.max(maxResult, result);
+			minResult = Math.min(minResult, result);
+			return;
+		}
+		for (int i = 0; i < 4; i++) {
+			if (oper[i] > 0) {
+				oper[i]--;
+				if (i == 0)
+					search(idx+1, result + nums[idx]);
+				if (i == 1)
+					search(idx+1, result - nums[idx]);
+				if (i == 2)
+					search(idx+1, result * nums[idx]);
+				if (i == 3)
+					search(idx+1, result / nums[idx]);
+				oper[i]++;
+			}
+		}
 
-		return dp[i][j] = dfs(i + map[i][j], j) + dfs(i, j + map[i][j]);
 	}
 
+//	private static void search(int depth, int[] candidate) {
+//		// TODO Auto-generated method stub
+//		if (depth == N - 1) {
+//			Stack<Integer> stack = new Stack<>();
+//			for (int i = N - 1; i >= 0; i--) {
+//				stack.push(nums[i]);
+//			}
+//			for (int i = 0; i < N - 1; i++) {
+//				int first = stack.pop();
+//				int second = stack.pop();
+//				if (candidate[i] == 0)
+//					first += second;
+//				if (candidate[i] == 1)
+//					first -= second;
+//				if (candidate[i] == 2)
+//					first *= second;
+//				if (candidate[i] == 3)
+//					first /= second;
+//				stack.push(first);
+//			}
+//			int curResult = stack.pop();
+//			maxResult = Math.max(curResult, maxResult);
+//			minResult = Math.min(curResult, minResult);
+//			return;
+//		}
+//		for (int i = 0; i < 4; i++) {
+//			if (oper[i] != 0) {
+//				candidate[depth] = i;
+//				oper[i]--;
+//				search(depth + 1, candidate);
+//				oper[i]++;
+//			}
+//		}
+//	}
 }
