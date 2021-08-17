@@ -1,35 +1,34 @@
-package baekjoon_1174_줄어드는_숫자;
+package baekjoon_9465_스티커;
 
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
-	private static int[] candidate;
-	private static ArrayList<Long> list;
-
-	public static void main(String[] args) {
-		candidate = new int[] {9, 8, 7, 6, 5, 4, 3, 2, 1, 0}; // 10개 조합
-		Scanner sc = new Scanner(System.in);
-		list = new ArrayList<Long>();
-		int n = sc.nextInt();
-		if(n > 1023) { // 중복 제거하니 들어가는 사이즈가 1024개
-			System.out.println(-1);
-			System.exit(0);
-		}
-		search(0, 0);
-		list.sort(null); // 자릿수 순서로 정렬
-		System.out.println(list.get(n-1));
-}
-	
-
-	private static void search(long digit, int idx) {
-		// TODO Auto-generated method stub
-		if(!list.contains(digit)) // 조합인데 중복이 왜 생겼지? 빡치네
-			list.add(digit);
-		if(idx >= 10) {
-			return;
-		}
-		search((digit * 10) + candidate[idx], idx + 1);
-		search(digit, idx + 1);
-	}
-}
+	public static void main(String[] args) throws NumberFormatException, IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int T = Integer.parseInt(br.readLine());
+		StringTokenizer st;
+		StringBuilder sb = new StringBuilder();
+		
+		for(int t = 0; t < T; t++) {
+			int n = Integer.parseInt(br.readLine());
+			int[][] arr = new int[2][n];
+			for(int i = 0; i< 2; i++) {
+				st = new StringTokenizer(br.readLine());
+				for (int j = 0; j < n; j++) {
+					arr[i][j] = Integer.parseInt(st.nextToken());
+				}
+			} // end of for input
+			
+			int[][] dp = new int[2][n + 2]; // 알고리즘 일반화를 위해 2칸 추가
+			for(int i = 2; i < n+2; i++) {
+				dp[0][i] = Math.max(dp[1][i-2], dp[1][i-1]) + arr[0][i-2];
+				dp[1][i] = Math.max(dp[0][i-2], dp[0][i-1]) + arr[1][i-2];
+			}
+			sb.append(Math.max(dp[1][n+1], dp[0][n+1])).append("\n");
+		} // end of testCases
+		System.out.println(sb);
+	} // end of main
+} // end of class
