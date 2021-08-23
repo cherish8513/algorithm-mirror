@@ -1,4 +1,4 @@
-package baekjoon_11660_구간합구하기5;
+package decend;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,50 +6,79 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
-	private static int MAP_SIZE;
-	private static int[][] map;
-	private static int[][] dpMemoization;
-	private static int outOfRange = 0;
-
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws NumberFormatException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		StringBuilder sb = new StringBuilder();
-		MAP_SIZE = Integer.parseInt(st.nextToken());
-		map = new int[MAP_SIZE+2][MAP_SIZE+2];
-		int T = Integer.parseInt(st.nextToken());
-		for(int i = 1; i < MAP_SIZE+1; i++) {
-			st = new StringTokenizer(br.readLine());
-			for (int j = 1; j < MAP_SIZE+1; j++) {
-				map[i][j] = Integer.parseInt(st.nextToken());
+		int n = Integer.parseInt(br.readLine());
+		int[] dp_max_map = new int[3];
+		int[] dp_min_map = new int[3];
+
+		for (int i = 0; i < n; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+			if (i == 0) {
+				dp_min_map[0] = dp_max_map[0] = Integer.parseInt(st.nextToken());
+				dp_min_map[1] = dp_max_map[1] = Integer.parseInt(st.nextToken());
+				dp_min_map[2] = dp_max_map[2] = Integer.parseInt(st.nextToken());
+			} else {
+				int before_max_0 = dp_max_map[0];
+				int before_max_1 = dp_max_map[1];
+				int next_0 = Integer.parseInt(st.nextToken());
+				int next_1 = Integer.parseInt(st.nextToken());
+				int next_2 = Integer.parseInt(st.nextToken());
+				dp_max_map[0] = Math.max(dp_max_map[0], dp_max_map[1]) + next_0;
+				dp_max_map[1] = Math.max(Math.max(before_max_0, dp_max_map[1]), dp_max_map[2]) + next_1;
+				dp_max_map[2] = Math.max(dp_max_map[2], before_max_1) + next_2;
+				int before_min_0 = dp_min_map[0];
+				int before_min_1 = dp_min_map[1];
+				dp_min_map[0] = Math.min(dp_min_map[0], dp_min_map[1]) + next_0;
+				dp_min_map[1] = Math.min(Math.min(before_min_0, dp_min_map[1]), dp_min_map[2]) + next_1;
+				dp_min_map[2] = Math.min(dp_min_map[2], before_min_1) + next_2;
 			}
 		}
-		dpMemoization = new int[MAP_SIZE+2][MAP_SIZE+2];
-		saveMemoization(MAP_SIZE, MAP_SIZE); // 끝 지점부터 시작지점까지 순회
-		
-		for(int t = 0; t < T; t++) {
-			st = new StringTokenizer(br.readLine());
-			int srcX = Integer.parseInt(st.nextToken());
-			int srcY = Integer.parseInt(st.nextToken());
-			int destX = Integer.parseInt(st.nextToken());
-			int destY = Integer.parseInt(st.nextToken());
-			int resultOfSum = dpMemoization[destX][destY] 
-							- dpMemoization[srcX-1][destY]
-							- dpMemoization[destX][srcY-1]
-							+ dpMemoization[srcX-1][srcY-1];
-			sb.append(resultOfSum).append("\n");
-		}
-		System.out.println(sb);
-	}
-
-	private static int saveMemoization(int srcX, int srcY) {
-		// TODO Auto-generated method stub
-		if(srcX == outOfRange || srcY == outOfRange)
-			return 0;
-		if(dpMemoization[srcY][srcX] != 0)
-			return dpMemoization[srcY][srcX];
-		
-		return dpMemoization[srcY][srcX] = map[srcY][srcX] + saveMemoization(srcX-1, srcY)
-										 + saveMemoization(srcX, srcY-1) - saveMemoization(srcX-1, srcY-1);
+		System.out.println(Math.max(Math.max(dp_max_map[0], dp_max_map[1])
+				, dp_max_map[2]));
+		System.out.println(Math.min(Math.min(dp_min_map[0], dp_min_map[1])
+				, dp_min_map[2]));
 	}
 }
+
+//	static void bfs() {
+//		Queue<int[]> q = new LinkedList<>();
+//		q.add(new int[] { 0, 0, map[0][0] });
+//		q.add(new int[] { 0, 1, map[0][1] });
+//		q.add(new int[] { 0, 2, map[0][2] });
+//		while (!q.isEmpty()) {
+//			int[] pos = q.poll();
+//			int y = pos[0];
+//			int x = pos[1];
+//			int cur_val = pos[2];
+//			for (int i = 0; i < 3; i++) {
+//				int nx = x + dx[i];
+//				if (nx >= 0 && nx < 3)
+//					if (y + 1 == n - 1) {
+//						max_result = cur_val + map[y + 1][nx];
+//						min_result = Math.min(cur_val + map[y + 1][nx], min_result);
+//					} else if (cur_val + map[y + 1][nx] > dp_map[y+1][nx]) {
+//						q.add(new int[] { y + 1, nx, cur_val + map[y + 1][nx]});
+//						dp_map[y+1][nx] = cur_val + map[y+1][nx];
+//					}
+//					
+//			}
+//
+//		}
+//	}
+//}
+
+//	static void search(int depth, int start, int result) {
+//		if(depth == n) {
+//			max_result = Math.max(result, max_result);
+//			min_result = Math.min(result, min_result);
+//			return;
+//		}
+//		
+//		for(int i = 0; i < 3; i++) {
+//			int nx = start + dx[i];
+//			if(nx >= 0 && nx < 3) {
+//				search(depth+1, nx, map[depth][nx] + result);
+//			}
+//		}
+//	}
